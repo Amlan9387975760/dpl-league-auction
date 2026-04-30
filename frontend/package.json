@@ -1,6 +1,7 @@
 {
   "name": "dpl-auction-frontend",
   "version": "1.0.0",
+  "type": "module",
   "private": true,
   "scripts": {
     "dev": "vite",
@@ -8,10 +9,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "jspdf": "^2.5.1",
+    "jspdf-autotable": "^3.6.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.15.0",
-    "socket.io-client": "^4.6.1"
+    "react-router-dom": "^6.15.0"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.0.4",
@@ -19,6 +21,5 @@
     "postcss": "^8.4.28",
     "tailwindcss": "^3.3.3",
     "vite": "^4.4.9"
-  },
-  "type": "module"
+  }
 }
