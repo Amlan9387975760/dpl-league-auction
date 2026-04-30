@@ -102,6 +102,18 @@ function MobileTeamCard({ team, state, onBid }) {
         </div>
       </div>
 
+      {/* Bought players */}
+      {team.players.length > 0 && (
+        <div className="mt-2 space-y-0.5">
+          {team.players.map((p, i) => (
+            <div key={i} className="flex justify-between items-center text-[10px]">
+              <span className="text-gray-400 truncate max-w-[70%]">{p.name}</span>
+              <span className="font-bold flex-shrink-0 ml-1" style={{ color: team.color }}>{p.price}</span>
+            </div>
+          ))}
+        </div>
+      )}
+
       {/* Bid label */}
       <div className={`mt-2 text-center py-1.5 rounded-xl text-xs font-black tracking-wide
         ${canBid ? '' : leading ? '' : 'bg-gray-800/50 text-gray-600'}`}
@@ -425,7 +437,7 @@ export default function Auction() {
 
           {/* Team bid buttons — fill remaining space */}
           <div className="flex-1 p-3 overflow-y-auto">
-            <div className="grid grid-cols-2 gap-2 h-full" style={{ gridAutoRows: 'minmax(90px, 1fr)' }}>
+            <div className="grid grid-cols-2 gap-2 content-start">
               {state.teams.map(team => (
                 <MobileTeamCard key={team.id} team={team} state={state} onBid={placeBid} />
               ))}
