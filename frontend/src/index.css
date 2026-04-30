@@ -12,6 +12,17 @@ body {
   background: #07071A;
   color: #fff;
   -webkit-font-smoothing: antialiased;
+  overscroll-behavior: none;
+}
+
+button {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+input, textarea {
+  -webkit-tap-highlight-color: transparent;
 }
 
 ::-webkit-scrollbar {
