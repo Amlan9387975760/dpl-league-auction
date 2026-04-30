@@ -63,10 +63,11 @@ function Banner({ result, visible }) {
 
 // ── Mobile team bid button ────────────────────────────────────────────────────
 
-function MobileTeamCard({ team, state, onBid }) {
+function MobileTeamCard({ team, state, onBid, maxPlayers }) {
   const leading = state.highestBidder?.id === team.id;
   const nextBid = state.currentBid === 0 ? state.basePrice : state.currentBid + state.minIncrement;
-  const canBid = ['ready', 'bidding'].includes(state.status) && !leading && team.points >= nextBid;
+  const atMax = team.players.length >= maxPlayers;
+  const canBid = ['ready', 'bidding'].includes(state.status) && !leading && team.points >= nextBid && !atMax;
   const spent = state.budget - team.points;
 
   return (
@@ -88,9 +89,14 @@ function MobileTeamCard({ team, state, onBid }) {
 
       {/* Team name + points */}
       <div>
-        <div className="flex items-center gap-1.5 mb-1">
-          <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: team.color }} />
-          <span className="text-xs font-black text-white truncate">{team.name}</span>
+        <div className="flex items-center justify-between mb-1">
+          <div className="flex items-center gap-1.5 min-w-0">
+            <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: team.color }} />
+            <span className="text-xs font-black text-white truncate">{team.name}</span>
+          </div>
+          <span className={`text-[9px] font-bold flex-shrink-0 ml-1 px-1.5 py-0.5 rounded-full ${atMax ? 'bg-red-900/40 text-red-400' : 'text-gray-600'}`}>
+            {team.players.length}/{maxPlayers}
+          </span>
         </div>
         <div className="flex items-baseline gap-1">
           <span className="text-lg font-black leading-none" style={{ color: team.color }}>{team.points}</span>
@@ -119,7 +125,8 @@ function MobileTeamCard({ team, state, onBid }) {
         ${canBid ? '' : leading ? '' : 'bg-gray-800/50 text-gray-600'}`}
         style={canBid ? { backgroundColor: team.color, color: '#000' }
           : leading ? { backgroundColor: team.color + '30', color: team.color } : {}}>
-        {leading ? '★ LEADING'
+        {atMax ? 'ROSTER FULL'
+          : leading ? '★ LEADING'
           : !canBid && team.points < nextBid ? 'LOW FUNDS'
           : canBid ? `BID  ${nextBid} pts` : 'WAIT'}
       </div>
@@ -129,10 +136,11 @@ function MobileTeamCard({ team, state, onBid }) {
 
 // ── Desktop team card (sidebar) ───────────────────────────────────────────────
 
-function DesktopTeamCard({ team, state, onBid }) {
+function DesktopTeamCard({ team, state, onBid, maxPlayers }) {
   const leading = state.highestBidder?.id === team.id;
   const nextBid = state.currentBid === 0 ? state.basePrice : state.currentBid + state.minIncrement;
-  const canBid = ['ready', 'bidding'].includes(state.status) && !leading && team.points >= nextBid;
+  const atMax = team.players.length >= maxPlayers;
+  const canBid = ['ready', 'bidding'].includes(state.status) && !leading && team.points >= nextBid && !atMax;
   const spent = state.budget - team.points;
 
   return (
@@ -144,9 +152,14 @@ function DesktopTeamCard({ team, state, onBid }) {
         <div className="absolute -top-3 left-1/2 -translate-x-1/2 text-[10px] font-black px-3 py-0.5 rounded-full tracking-widest"
           style={{ backgroundColor: team.color, color: '#000' }}>LEADING</div>
       )}
-      <div className="flex items-center gap-2 mb-3">
-        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: team.color }} />
-        <span className="font-black text-sm truncate">{team.name}</span>
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2 min-w-0">
+          <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: team.color }} />
+          <span className="font-black text-sm truncate">{team.name}</span>
+        </div>
+        <span className={`text-[10px] font-bold flex-shrink-0 ml-2 px-1.5 py-0.5 rounded-full ${atMax ? 'bg-red-900/40 text-red-400' : 'text-gray-600 bg-gray-800/50'}`}>
+          {team.players.length}/{maxPlayers}
+        </span>
       </div>
       <div className="mb-2">
         <div className="flex justify-between items-baseline mb-1">
@@ -172,7 +185,7 @@ function DesktopTeamCard({ team, state, onBid }) {
       <button onClick={() => canBid && onBid(team.id)} disabled={!canBid}
         className={`w-full py-2.5 rounded-xl text-sm font-black tracking-wider transition-all ${canBid ? 'active:scale-95 cursor-pointer hover:brightness-110' : 'bg-gray-800/50 text-gray-600 cursor-not-allowed'}`}
         style={canBid ? { backgroundColor: team.color, color: '#000' } : {}}>
-        {leading ? '★ LEADING' : !canBid && team.points < nextBid ? 'LOW FUNDS' : canBid ? `BID  ${nextBid} PTS` : 'WAIT'}
+        {atMax ? 'ROSTER FULL' : leading ? '★ LEADING' : !canBid && team.points < nextBid ? 'LOW FUNDS' : canBid ? `BID  ${nextBid} PTS` : 'WAIT'}
       </button>
     </div>
   );
@@ -328,6 +341,7 @@ export default function Auction() {
 
   // ── Live auction — shared state ────────────────────────────────────────────
 
+  const maxPlayersPerTeam = Math.floor(state.players.length / state.teams.length);
   const currentPlayer = state.currentPlayerIndex >= 0 ? state.players[state.currentPlayerIndex] : null;
   const nextBid = state.currentBid === 0 ? state.basePrice : state.currentBid + state.minIncrement;
   const timerRed = state.timerValue <= 3 && state.status === 'bidding';
@@ -439,7 +453,7 @@ export default function Auction() {
           <div className="flex-1 p-3 overflow-y-auto">
             <div className="grid grid-cols-2 gap-2 content-start">
               {state.teams.map(team => (
-                <MobileTeamCard key={team.id} team={team} state={state} onBid={placeBid} />
+                <MobileTeamCard key={team.id} team={team} state={state} onBid={placeBid} maxPlayers={maxPlayersPerTeam} />
               ))}
             </div>
           </div>
@@ -474,7 +488,7 @@ export default function Auction() {
         {/* Teams sidebar */}
         <div className="w-56 flex-shrink-0 overflow-y-auto flex flex-col gap-3">
           {state.teams.map(team => (
-            <DesktopTeamCard key={team.id} team={team} state={state} onBid={placeBid} />
+            <DesktopTeamCard key={team.id} team={team} state={state} onBid={placeBid} maxPlayers={maxPlayersPerTeam} />
           ))}
         </div>
 

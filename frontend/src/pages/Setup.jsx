@@ -27,12 +27,18 @@ export default function Setup() {
     const t = [...teams]; t[i] = val; setTeams(t);
   };
 
+  const playerCount = playerInput.split('\n').filter(p => p.trim()).length;
+  const teamCount = teams.filter(t => t.trim()).length;
+  const maxPerTeam = teamCount >= 2 ? Math.floor(playerCount / teamCount) : 0;
+  const remainder = teamCount >= 2 ? playerCount % teamCount : 0;
+
   const handleLaunch = () => {
     setError('');
     const players = playerInput.split('\n').map(p => p.trim()).filter(Boolean);
     const teamNames = teams.map(t => t.trim()).filter(Boolean);
     if (players.length === 0) return setError('Add at least one player.');
     if (teamNames.length < 2) return setError('Add at least two teams.');
+    if (Math.floor(players.length / teamNames.length) === 0) return setError('Too many teams for the number of players. Add more players or remove teams.');
 
     const initialState = {
       status: 'configured',
@@ -137,6 +143,34 @@ export default function Setup() {
             ))}
           </div>
         </div>
+
+        {/* Roster cap preview */}
+        {playerCount > 0 && teamCount >= 2 && (
+          <div className="bg-[#0F0F28] rounded-2xl p-5 border border-[#FFD700]/15">
+            <h3 className="text-xs font-bold tracking-widest text-[#FFD700] uppercase mb-4">Roster Cap</h3>
+            <div className="flex items-center justify-around text-center">
+              <div>
+                <p className="text-3xl font-black text-white">{playerCount}</p>
+                <p className="text-[10px] text-gray-500 mt-1 tracking-widest uppercase">Players</p>
+              </div>
+              <p className="text-gray-700 text-xl font-light">÷</p>
+              <div>
+                <p className="text-3xl font-black text-white">{teamCount}</p>
+                <p className="text-[10px] text-gray-500 mt-1 tracking-widest uppercase">Teams</p>
+              </div>
+              <p className="text-gray-700 text-xl font-light">=</p>
+              <div>
+                <p className="text-3xl font-black text-[#FFD700]">{maxPerTeam}</p>
+                <p className="text-[10px] text-gray-500 mt-1 tracking-widest uppercase">Max / Team</p>
+              </div>
+            </div>
+            {remainder > 0 && (
+              <p className="text-xs text-gray-600 mt-4 text-center">
+                {remainder} player{remainder > 1 ? 's' : ''} will be unsold (doesn't divide evenly)
+              </p>
+            )}
+          </div>
+        )}
 
         {error && (
           <p className="text-red-400 text-sm text-center bg-red-900/20 py-2 rounded-xl border border-red-900/30">{error}</p>
