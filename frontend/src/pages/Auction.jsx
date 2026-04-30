@@ -94,8 +94,8 @@ function MobileTeamCard({ team, state, onBid, maxPlayers }) {
             <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: team.color }} />
             <span className="text-xs font-black text-white truncate">{team.name}</span>
           </div>
-          <span className={`text-[9px] font-bold flex-shrink-0 ml-1 px-1.5 py-0.5 rounded-full ${atMax ? 'bg-red-900/40 text-red-400' : 'text-gray-600'}`}>
-            {team.players.length}/{maxPlayers}
+          <span className={`text-[9px] font-black flex-shrink-0 ml-1 px-2 py-0.5 rounded-full border ${atMax ? 'bg-red-900/40 text-red-400 border-red-800' : 'bg-gray-800/60 text-gray-500 border-gray-700'}`}>
+            {atMax ? 'FULL' : `${team.players.length}/${maxPlayers}`}
           </span>
         </div>
         <div className="flex items-baseline gap-1">
@@ -157,8 +157,8 @@ function DesktopTeamCard({ team, state, onBid, maxPlayers }) {
           <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: team.color }} />
           <span className="font-black text-sm truncate">{team.name}</span>
         </div>
-        <span className={`text-[10px] font-bold flex-shrink-0 ml-2 px-1.5 py-0.5 rounded-full ${atMax ? 'bg-red-900/40 text-red-400' : 'text-gray-600 bg-gray-800/50'}`}>
-          {team.players.length}/{maxPlayers}
+        <span className={`text-[10px] font-black flex-shrink-0 ml-2 px-2 py-0.5 rounded-full border ${atMax ? 'bg-red-900/40 text-red-400 border-red-800' : 'bg-gray-800/60 text-gray-500 border-gray-700'}`}>
+          {atMax ? 'FULL' : `${team.players.length}/${maxPlayers}`}
         </span>
       </div>
       <div className="mb-2">
@@ -239,6 +239,8 @@ export default function Auction() {
       if (!team || prev.highestBidder?.id === teamId) return prev;
       const amount = prev.currentBid === 0 ? prev.basePrice : prev.currentBid + prev.minIncrement;
       if (team.points < amount) return prev;
+      const cap = Math.floor(prev.players.length / prev.teams.length);
+      if (team.players.length >= cap) return prev;
       return { ...prev, currentBid: amount, highestBidder: { id: team.id, name: team.name }, status: 'bidding', timerValue: 10, bidHistory: [{ team: team.name, amount, time: Date.now() }, ...prev.bidHistory].slice(0, 15) };
     });
     restartTimer();
@@ -388,9 +390,10 @@ export default function Auction() {
     <div className="lg:hidden flex flex-col bg-[#07071A] text-white" style={{ height: '100dvh' }}>
 
       {/* Header */}
-      <header className="flex-shrink-0 flex items-center justify-between px-4 py-3 border-b border-[#FFD700]/10">
+      <header className="flex-shrink-0 flex items-center justify-between px-4 py-2.5 border-b border-[#FFD700]/10">
         <div>
           <h1 className="text-base font-black tracking-[0.15em] text-[#FFD700] gold-glow">DPL LEAGUE</h1>
+          <p className="text-[9px] text-gray-600 tracking-wider">Max <span className="text-[#FFD700]/70 font-bold">{maxPlayersPerTeam}</span> players/team</p>
         </div>
         <div className="flex items-center gap-2">
           {currentPlayer && <span className="text-gray-500 text-xs">{state.currentPlayerIndex + 1}/{state.players.length}</span>}
@@ -405,6 +408,10 @@ export default function Auction() {
             <p className="text-xs tracking-widest text-[#FFD700]/50 mb-2">READY TO BEGIN</p>
             <p className="text-6xl font-black text-[#FFD700] gold-glow">{state.players.length}</p>
             <p className="text-gray-400 mt-1">{state.players.length === 1 ? 'player' : 'players'} · {state.teams.length} teams</p>
+            <div className="mt-3 inline-flex items-center gap-2 bg-[#FFD700]/10 border border-[#FFD700]/20 rounded-xl px-4 py-2">
+              <span className="text-[#FFD700] font-black text-lg">{maxPlayersPerTeam}</span>
+              <span className="text-xs text-gray-400">max players per team</span>
+            </div>
           </div>
           <button onClick={handleStart}
             className="w-full max-w-xs py-5 bg-[#FFD700] text-black font-black text-2xl rounded-2xl active:scale-95 transition-all shadow-xl shadow-[#FFD700]/25 tracking-wider">
@@ -477,6 +484,7 @@ export default function Auction() {
           <p className="text-[9px] tracking-[0.4em] text-gray-500 uppercase">Downtown Premier League</p>
         </div>
         <div className="flex items-center gap-3">
+          <span className="text-xs text-gray-600">Max <span className="text-[#FFD700]/70 font-bold">{maxPlayersPerTeam}</span>/team</span>
           {currentPlayer && <span className="text-gray-500 text-xs">{state.currentPlayerIndex + 1} / {state.players.length}</span>}
           {statusBadge}
         </div>
