@@ -72,6 +72,30 @@ export default function Setup() {
         <p className="text-xs tracking-[0.5em] text-[#FFD700]/40 mb-2">WELCOME TO</p>
         <h1 className="text-4xl sm:text-5xl font-black tracking-[0.15em] text-[#FFD700] gold-glow">DPL LEAGUE</h1>
         <p className="text-sm tracking-[0.4em] text-gray-400 mt-2">DOWNTOWN PREMIER LEAGUE</p>
+
+        <div className="mt-8 px-4">
+          <p className="text-xs tracking-[0.4em] text-[#FFD700]/40 uppercase mb-5">Season Teams</p>
+          <div className="flex justify-center items-center gap-6 sm:gap-10 flex-wrap">
+            <div className="flex flex-col items-center gap-2">
+              <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full overflow-hidden border-2 border-blue-400/40 shadow-lg shadow-blue-500/20">
+                <img src="/modahi-monsters.png" alt="Modahi Monsters" className="w-full h-full object-cover" />
+              </div>
+              <p className="text-[10px] tracking-widest text-gray-400 uppercase">Modahi Monsters</p>
+            </div>
+            <div className="flex flex-col items-center gap-2">
+              <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full overflow-hidden border-2 border-red-500/40 shadow-lg shadow-red-500/20">
+                <img src="/bhut-jolokia-blasters.png" alt="Bhut Jolokia Blasters" className="w-full h-full object-cover" />
+              </div>
+              <p className="text-[10px] tracking-widest text-gray-400 uppercase">Bhut Jolokia Blasters</p>
+            </div>
+            <div className="flex flex-col items-center gap-2">
+              <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full overflow-hidden border-2 border-[#FFD700]/40 shadow-lg shadow-[#FFD700]/20">
+                <img src="/zg-legends.png" alt="ZG Legends" className="w-full h-full object-cover" />
+              </div>
+              <p className="text-[10px] tracking-widest text-gray-400 uppercase">ZG Legends</p>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div className="max-w-2xl mx-auto px-4 py-6 sm:py-10 space-y-4 sm:space-y-5">
