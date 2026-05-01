@@ -84,13 +84,13 @@ export default function Setup() {
             </div>
             <div className="flex flex-col items-center gap-2">
               <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full overflow-hidden border-2 border-red-500/40 shadow-lg shadow-red-500/20">
-                <img src="/bhut-jolokia-blasters.png" alt="Bhut Jolokia Blasters" className="w-full h-full object-cover" />
+                <img src="/bhut-jolokia-blasters.jpeg" alt="Bhut Jolokia Blasters" className="w-full h-full object-cover" />
               </div>
               <p className="text-[10px] tracking-widest text-gray-400 uppercase">Bhut Jolokia Blasters</p>
             </div>
             <div className="flex flex-col items-center gap-2">
               <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full overflow-hidden border-2 border-[#FFD700]/40 shadow-lg shadow-[#FFD700]/20">
-                <img src="/zg-legends.png" alt="ZG Legends" className="w-full h-full object-cover" />
+                <img src="/zg-legends.jpeg" alt="ZG Legends" className="w-full h-full object-cover" />
               </div>
               <p className="text-[10px] tracking-widest text-gray-400 uppercase">ZG Legends</p>
             </div>
